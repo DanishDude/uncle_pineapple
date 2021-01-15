@@ -158,6 +158,11 @@ router
                     success: false,
                     msg: `Recipe not found with _id ${recipeId}`,
                 });
+            } else if (_id.toString() !== recipe.user.toString()) {
+                return res.status(400).send({
+                    success: false,
+                    msg: `User ${_id} is not the owner of recipe ${recipeId}`,
+                });
             } else {
                 if (recipe.photo) {
                     uploadFile.deleteCloudinaryResource(recipe.photo);
