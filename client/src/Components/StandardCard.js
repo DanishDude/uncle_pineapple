@@ -10,7 +10,6 @@ const StandardCard = (props) => {
         fetch('http://localhost:5000/api/recipe/5ffebdeda1558030b728c799')
             .then((res) => res.json())
             .then((payload) => {
-                console.log(payload);
                 const { success, msg, recipe } = payload;
 
                 if (!success) {

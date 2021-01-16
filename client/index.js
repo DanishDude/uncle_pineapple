@@ -1,17 +1,17 @@
-import { AppRegistry } from 'react-native';
 import React from 'react';
-import App from './App';
-import { name as appName } from './app.json';
+import App from './App.js';
+
+import store from './store.js';
+
 import { Provider } from 'react-redux';
+import { registerRootComponent } from 'expo';
 
-import configureStore from './store';
+const rootComponent = () => {
+    return (
+        <Provider store={store}>
+            <App />
+        </Provider>
+    );
+};
 
-const store = configureStore();
-
-const RNRedux = () => (
-    <Provider store={store}>
-        <App toto={'bobo'} />
-    </Provider>
-);
-
-AppRegistry.registerComponent(appName, () => RNRedux);
+export default registerRootComponent(rootComponent);
