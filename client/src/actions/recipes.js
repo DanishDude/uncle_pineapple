@@ -18,12 +18,12 @@ export const getAllRecipes = () => (dispatch) => {
     dispatch(startGetAllRecipes());
 
     fetch('http://localhost:5000/api/recipe/search?ids')
-        .then((res) => res.json)
+        .then((res) => res.json())
         .then((payload) => {
             const { success, msg, recipes } = payload;
 
             if (!success) {
-                dispatch(errorGetAllRecipes(msg));
+                dispatch(errorGetAllRecipes(`Error: ${msg}`));
             } else {
                 dispatch(successGetAllRecipes(recipes));
             }
