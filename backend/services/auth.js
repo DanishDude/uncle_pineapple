@@ -1,45 +1,49 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const validate = require('../services/validate');
 
 function createToken(user) {
-    const { _id, email } = user;
-    return jwt.sign({ _id, email }, process.env.PRIVATE_KEY /* , { expiresIn: ' 30m' } */);
+    const { _id, email, firstname, lastname } = user;
+    return jwt.sign({ _id, email, firstname, lastname }, process.env.PRIVATE_KEY /* , { expiresIn: ' 30m' } */);
 }
 
 function createPublicUser(user) {
-    const { _id, email, likes } = user;
-    return { _id, email, likes };
+    const { _id, email, firstname, lastname } = user;
+    return { _id, email, firstname, lastname };
 }
 
 class Auth {
-    signup(req, res) {
+    async signup(req, res) {
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            res.json({ success: false, msg: 'Please pass email and password' });
-        } else {
-            const newUser = new User({ email, password });
+        if (!email || !validate.emailFormat(email)) {
+            return res.status(401).send({ success: false, msg: 'Please provide a valid email' });
+        } else if (!password) {
+            return res.status(401).send({ success: false, msg: 'Please provide a password' });
+        }
 
-            newUser.save(async (err, user) => {
-                if (err) {
-                    if (err.errmsg && err.errmsg.includes('duplicate key'))
-                        return await res.status(401).json({ success: false, msg: 'Email already exists.' });
+        const newUser = new User(req.body);
 
-                    if (err)
-                        return await res.status(400).json({
-                            success: false,
-                            msg: 'Check email and password are correct',
-                        });
+        newUser.save(async (err, user) => {
+            if (err) {
+                if (err?.errmsg?.includes('duplicate key') && err?.keyPattern?.email) {
+                    return await res.status(401).json({ success: false, msg: 'Email already exists.' });
                 }
 
-                return await res.status(201).json({
-                    success: true,
-                    msg: 'New user created',
-                    user: createPublicUser(user),
-                    token: 'JWT ' + createToken(user),
-                });
+                if (err)
+                    return await res.status(400).json({
+                        success: false,
+                        msg: 'Check email and password are correct',
+                    });
+            }
+
+            return await res.status(201).json({
+                success: true,
+                msg: 'New user created',
+                user: createPublicUser(user),
+                token: 'JWT ' + createToken(user),
             });
-        }
+        });
     }
 
     login(req, res, next) {

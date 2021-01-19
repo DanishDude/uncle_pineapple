@@ -12,10 +12,10 @@ const userSchema = new Schema(
             required: true,
             match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'is invalid'],
         },
-        password: { type: String, required: true, select: false },
+        password: { type: String, select: false },
         firstname: { type: String },
         lastname: { type: String },
-        likes: [{ type: Schema.Types.ObjectId, ref: 'Recipe', unique: true, default: undefined }],
+        likes: [{ type: Schema.Types.ObjectId, ref: 'Recipe' }],
     },
     { timestamps: { createdAt: 'created_at' } }
 );
@@ -23,7 +23,7 @@ const userSchema = new Schema(
 userSchema.pre('save', function (next) {
     const user = this;
 
-    if (user.isModified('password') || user.isNew) {
+    if (user.isModified('password') || (user.isNew && user.password)) {
         bcrypt.hash(user.password, 10, (err, hash) => {
             if (err) return next(err);
             user.password = hash;

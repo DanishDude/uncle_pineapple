@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         marginHorizontal: 5,
-        marginVertical: 10,
+        marginVertical: 5,
     },
     photo: {
         resizeMode: 'contain',
