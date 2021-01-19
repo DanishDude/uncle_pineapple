@@ -14,7 +14,7 @@ const Recipe = (props) => {
             {loading ? <Text>Loading...</Text> : undefined}
             {recipes?.length
                 ? recipes.map((recipe) => {
-                      return <StandardCard key={recipe._id} recipe={recipe} />;
+                      return <StandardCard {...props} key={recipe._id} recipe={recipe} />;
                   })
                 : undefined}
         </View>
