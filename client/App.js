@@ -1,26 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { StyleSheet, Text, View } from 'react-native';
-import { getAllRecipes } from './src/actions/recipes';
-import StandardCard from './src/Components/StandardCard';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Home from './src/Screens/Home';
+import Recipes from './src/Screens/Recipes';
+import UserProfile from './src/Screens/UserProfile';
+
+const Stack = createStackNavigator();
 
 export default function App(props) {
-    const { error, loading, recipes } = useSelector((state) => state.recipes);
-    const dispatch = useDispatch();
-    useEffect(() => dispatch(getAllRecipes()), [dispatch]);
-
     return (
-        <View style={styles.container}>
-            {error ? <Text>Error loading recipes - {error}</Text> : undefined}
-            {loading ? <Text>Loading...</Text> : undefined}
-            {recipes?.length
-                ? recipes.map((recipe) => {
-                      return <StandardCard key={recipe._id} recipe={recipe} />;
-                  })
-                : undefined}
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="Home">
+                <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="Recipes" component={Recipes} />
+                <Stack.Screen name="UserProfile" component={UserProfile} />
+            </Stack.Navigator>
             <StatusBar style="auto" />
-        </View>
+        </NavigationContainer>
     );
 }
 

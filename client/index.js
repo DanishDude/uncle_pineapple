@@ -1,10 +1,9 @@
 import React from 'react';
-import App from './App.js';
-
-import store from './store.js';
-
 import { Provider } from 'react-redux';
 import { registerRootComponent } from 'expo';
+
+import store from './store.js';
+import App from './App.js';
 
 const rootComponent = () => {
     return (
