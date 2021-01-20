@@ -1,9 +1,21 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-elements';
+import { useDispatch, useSelector } from 'react-redux';
+import { requestLogin } from '../actions/user';
 
 const NavBar = (props) => {
     const { navigation } = props;
+    const { isLoggedIn, token } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+
+    const handlePrivateRoute = (route) => {
+        if (!isLoggedIn && token === '') {
+            dispatch(requestLogin());
+        } else {
+            navigation.navigate(route);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -14,7 +26,7 @@ const NavBar = (props) => {
                 <Button title="Recipes" type="outline" onPress={() => navigation.navigate('Recipes')} />
             </View>
             <View style={styles.btns}>
-                <Button title="UserProfile" type="outline" onPress={() => navigation.navigate('UserProfile')} />
+                <Button title="UserProfile" type="outline" onPress={() => handlePrivateRoute('UserProfile')} />
             </View>
         </View>
     );

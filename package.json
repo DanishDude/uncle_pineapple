@@ -8,7 +8,7 @@
         "yarn": "1.x"
     },
     "scripts": {
-        "client": "cd client && yarn start",
+        "client": "cd client && yarn ios",
         "server": "cd backend && nodemon server.js",
         "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
         "dev:server": "cd client && yarn build && cd .. && yarn start",

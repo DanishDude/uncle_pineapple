@@ -1,11 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
-import { useSelector } from 'react-redux';
 
 const UserProfile = (props) => {
-    const { user } = useSelector((state) => state);
-
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
