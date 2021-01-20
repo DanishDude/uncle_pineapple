@@ -3,13 +3,13 @@ const User = require('../models/user');
 const validate = require('../services/validate');
 
 function createToken(user) {
-    const { _id, email, firstname, lastname } = user;
-    return jwt.sign({ _id, email, firstname, lastname }, process.env.PRIVATE_KEY /* , { expiresIn: ' 30m' } */);
+    const { _id, email, firstname, lastname, likes } = user;
+    return jwt.sign({ _id, email, firstname, lastname, likes }, process.env.PRIVATE_KEY /* , { expiresIn: ' 30m' } */);
 }
 
 function createPublicUser(user) {
-    const { _id, email, firstname, lastname } = user;
-    return { _id, email, firstname, lastname };
+    const { _id, email, firstname, lastname, likes } = user;
+    return { _id, email, firstname, lastname, likes };
 }
 
 class Auth {
@@ -23,18 +23,12 @@ class Auth {
         }
 
         const newUser = new User(req.body);
-
         newUser.save(async (err, user) => {
             if (err) {
                 if (err?.errmsg?.includes('duplicate key') && err?.keyPattern?.email) {
                     return await res.status(401).json({ success: false, msg: 'Email already exists.' });
                 }
-
-                if (err)
-                    return await res.status(400).json({
-                        success: false,
-                        msg: 'Check email and password are correct',
-                    });
+                return await res.status(400).json({ success: false, msg: err });
             }
 
             return await res.status(201).json({
@@ -68,7 +62,7 @@ class Auth {
                     }
                 });
             }
-        }).select(['email', 'password', 'likes']);
+        }).select(['email', 'password', 'firstname', 'lastname', 'likes']);
     }
 }
 
