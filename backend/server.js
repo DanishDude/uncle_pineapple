@@ -12,9 +12,10 @@ require('dotenv').config();
 const { handleError } = require('./services/error');
 const passportManager = require('./services/passport');
 const auth = require('./routes/auth');
-const messsage = require('./routes/message');
 const indexRouter = require('./routes/index');
+const messsage = require('./routes/message');
 const recipe = require('./routes/recipe');
+const user = require('./routes/user');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -40,6 +41,7 @@ app.use('/api', indexRouter);
 app.use('/api/auth', auth);
 app.use('/api/message', messsage);
 app.use('/api/recipe', recipe);
+app.use('/api/user', user);
 
 if (process.env.NODE_ENV === 'production') {
     // Serve any static files
