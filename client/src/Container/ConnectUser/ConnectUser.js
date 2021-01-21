@@ -4,8 +4,6 @@ import { BottomSheet, Button, Text } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { REACT_APP_API_SERVER } from '@env';
 import { denyLoginRequest, login, signup } from '../../actions/user';
-// import { email } from '../../Components/Forms/validate'; // validators ??
-import ButtonNext from '../../Components/ButtonNext';
 import InputText from '../../Components/Forms/InputText';
 
 const ConnectUser = (props) => {
@@ -104,7 +102,6 @@ const ConnectUser = (props) => {
 
             {newUser.state === 'new password' ? <Text>Welcome ! Create a new profile</Text> : undefined}
 
-            {/* <ButtonNext style={styles.next} title="Next" /> */}
             <Button buttonStyle={styles.next} title="Next" onPress={() => updateUserState()} />
         </BottomSheet>
     );
