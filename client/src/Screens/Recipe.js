@@ -21,11 +21,9 @@ const Recipe = (props) => {
                             <Text h4 h4Style={styles.subTitle}>
                                 Ingredients
                             </Text>
-                            {recipe.ingredients.map((ingredient) => {
+                            {recipe.ingredients.map((ingredient, i) => {
                                 return (
-                                    <Text key={ingredient._id}>
-                                        - {`${ingredient.qty} ${ingredient.unit} ${ingredient.name}`}
-                                    </Text>
+                                    <Text key={i}>- {`${ingredient.qty} ${ingredient.unit} ${ingredient.name}`}</Text>
                                 );
                             })}
                         </View>

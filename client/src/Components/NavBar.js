@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     },
     btns: {
         flex: 1,
+        minHeight: 60,
     },
 });
 

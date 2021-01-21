@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "react-native-dotenv": "^2.5.0",
     "redux-devtools-extension": "^2.13.8"
   },
   "private": true

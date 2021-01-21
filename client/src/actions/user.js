@@ -56,7 +56,7 @@ export const login = (user) => (dispatch) => {
         body: JSON.stringify(user),
     };
 
-    fetch('http://localhost:5000/api/auth/signup', options)
+    fetch('http://localhost:5000/api/auth/login', options)
         .then((res) => res.json())
         .then((payload) => {
             const { success, msg, user, token } = payload;

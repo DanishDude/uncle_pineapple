@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import ConnectUser from './src/Components/ConnectUser';
+import ConnectUser from './src/Container/ConnectUser/ConnectUser';
 import Home from './src/Screens/Home';
 import Recipe from './src/Screens/Recipe';
 import Recipes from './src/Screens/Recipes';

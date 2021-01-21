@@ -4,9 +4,9 @@ const router = Router();
 const userService = require('../services/user');
 const validate = require('../services/validate');
 
-router.get('/validate-email', async (req, res, next) => {
+router.get('/:email', async (req, res, next) => {
     try {
-        const { email } = req.body;
+        const { email } = req.params;
 
         if (!email || !validate.emailFormat(email)) {
             return res.status(401).send({ success: false, msg: 'Please provide a valid email' });
