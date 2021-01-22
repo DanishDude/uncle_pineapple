@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import NavBar from '../Components/NavBar';
 
 const Home = (props) => {
+    console.log('HOME ', props);
     return (
         <View style={styles.container}>
             <Text>Home Screen !</Text>

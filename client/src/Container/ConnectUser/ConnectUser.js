@@ -3,33 +3,34 @@ import { StyleSheet, View } from 'react-native';
 import { BottomSheet, Button, Text } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { REACT_APP_API_SERVER } from '@env';
+import { emailFormat } from '../../Components/Forms/validation';
 import { denyLoginRequest, login, signup } from '../../actions/user';
 import InputText from '../../Components/Forms/InputText';
 
 const ConnectUser = (props) => {
-    const { error, isLoggedIn, requestLogin } = useSelector((state) => state.user);
+    console.log('CU props ', props);
+    const { context, error, isLoggedIn, requestLogin, user, token } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const [isVisible, setIsVisible] = useState(false);
-    const [newUser, setNewUser] = useState({ email: '', loading: false });
+    const [newUser, setNewUser] = useState({ state: 'email', email: '', loading: false });
 
     useEffect(() => {
         if (requestLogin) {
             setIsVisible(true);
-        } else if (isLoggedIn) {
-            console.log("Yay ! I'm in !!");
-            closeBottomSheet();
         }
     }, [isLoggedIn, requestLogin]);
 
-    const validateEmail = async () => {
-        const options = {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: newUser.email }),
-        };
+    useEffect(() => {
+        if (isLoggedIn) {
+            setNewUser({ ...newUser, loading: false });
+            closeBottomSheet();
+            // props.navigation.navigate(context.requestedRoute);
+        }
 
+        return closeBottomSheet();
+    }, [isLoggedIn]);
+
+    const isEmailRegistered = async () => {
         const result = await fetch(`${REACT_APP_API_SERVER}/user/${newUser.email}`)
             .then((res) => res.json())
             .then((payload) => {
@@ -37,11 +38,16 @@ const ConnectUser = (props) => {
 
                 if (!success) {
                     console.log(msg);
-                    return setNewUser({ ...newUser, email: '', loading: false });
+                    return setNewUser({
+                        ...newUser,
+                        email: '',
+                        loading: false,
+                        error: 'Aw Snap :-/ Network error. Please try agian',
+                    });
                 } else if (success && isRegistered) {
-                    return setNewUser({ ...newUser, state: 'password', loading: false });
+                    return setNewUser({ ...newUser, state: 'password', loading: false, error: '' });
                 } else if (success && !isRegistered) {
-                    return setNewUser({ ...newUser, state: 'new password', loading: false });
+                    return setNewUser({ ...newUser, state: 'new password', loading: false, error: '' });
                 }
             })
             .catch((err) => {
@@ -52,24 +58,63 @@ const ConnectUser = (props) => {
         return result;
     };
 
-    const updateUserState = () => {
-        newUser.loading = true;
+    const nextAction = () => {
+        setNewUser({ ...newUser, loading: true, error: '' });
+        console.log(newUser);
+        const { email, password, confirmPassword } = newUser;
 
-        const { email, password } = newUser;
+        switch (newUser.state) {
+            case 'email':
+                if (emailFormat(email)) {
+                    return isEmailRegistered();
+                } else {
+                    return setNewUser({ ...newUser, error: 'Invalid Email format' });
+                }
+            case 'password':
+                if (!password?.length) {
+                    return setNewUser({ ...newUser, error: 'Please enter a password' });
+                } else {
+                    setNewUser({ ...newUser, error: '' });
+                    return dispatch(login({ email, password }));
+                }
+            case 'new password':
+                // TODO add password rules
+                if (!password?.length) {
+                    return setNewUser({ ...newUser, error: 'Please enter a password' });
+                } else {
+                    return setNewUser({ ...newUser, state: 'confirm password', error: '' });
+                }
+            case 'confirm password':
+                if (password !== confirmPassword) {
+                    return setNewUser({ ...newUser, error: 'Passwords do not match' });
+                } else {
+                    return dispatch(signup({ email, password }));
+                }
+            default:
+                return;
+        }
+    };
 
-        if (!newUser.state) {
-            validateEmail();
-        } else if (newUser.state === 'password') {
-            dispatch(login({ email, password }));
-        } else if (newUser.state === 'new password') {
-            dispatch(signup({ email, password }));
+    const backAction = () => {
+        console.log('NU: ', newUser);
+        switch (newUser.state) {
+            case 'password':
+                return setNewUser({ ...newUser, state: 'email', password: '', error: '' });
+            case 'new password':
+                return setNewUser({ ...newUser, state: 'email', password: '', error: '' });
+            case 'confirm password':
+                return setNewUser({ ...newUser, state: 'new password', confirmPassword: '', error: '' });
+                console.log(newUser);
+                return;
+            default:
+                return;
         }
     };
 
     const closeBottomSheet = () => {
         setIsVisible(false);
         dispatch(denyLoginRequest());
-        setNewUser({ email: '', loading: false });
+        setNewUser({ state: 'email', email: '', loading: false });
     };
 
     return (
@@ -77,13 +122,17 @@ const ConnectUser = (props) => {
             <Text style={styles.caption} onPress={() => closeBottomSheet()}>
                 Hey! Let's login
             </Text>
-            <Text style={{ color: 'red' }}>{error}</Text>
             {newUser.loading ? <Text style={{ color: 'green' }}>Loading ...</Text> : undefined}
-            {!newUser.state ? (
+
+            {newUser.state === 'email' ? (
                 <View>
                     <InputText
                         placeholder="uncle.pineapple@mail.com"
-                        onChangeText={(value) => setNewUser({ ...newUser, email: value })}
+                        autoCompleteType="email"
+                        keyboardType="email-address"
+                        textContentType="emailAddress"
+                        onChangeText={(value) => setNewUser({ ...newUser, email: value.toLowerCase() })}
+                        value={newUser.email}
                     />
                 </View>
             ) : undefined}
@@ -95,14 +144,52 @@ const ConnectUser = (props) => {
                     <InputText
                         secureTextEntry={true}
                         placeholder="Nachos"
+                        autoCompleteType="password"
+                        keyboardType="default"
+                        textContentType="password"
+                        onChangeText={(value) => setNewUser({ ...newUser, password: value })}
+                        value={newUser.password}
+                    />
+                </View>
+            ) : undefined}
+
+            {newUser.state === 'new password' ? (
+                <View>
+                    <Text>Welcome ! Create a password for your profile</Text>
+                    <Text style={styles.email}>{newUser.email}</Text>
+                    <InputText
+                        secureTextEntry={true}
+                        placeholder="Nachos"
+                        autoCompleteType="password"
+                        keyboardType="default"
+                        textContentType="newPassword"
                         onChangeText={(value) => setNewUser({ ...newUser, password: value })}
                     />
                 </View>
             ) : undefined}
 
-            {newUser.state === 'new password' ? <Text>Welcome ! Create a new profile</Text> : undefined}
+            {newUser.state === 'confirm password' ? (
+                <View>
+                    <Text>Great ! Confirm your password</Text>
+                    <Text style={styles.email}>{newUser.email}</Text>
+                    <InputText
+                        secureTextEntry={true}
+                        placeholder=""
+                        autoCompleteType="password"
+                        keyboardType="default"
+                        textContentType="newPassword"
+                        onChangeText={(value) => setNewUser({ ...newUser, confirmPassword: value })}
+                    />
+                </View>
+            ) : undefined}
 
-            <Button buttonStyle={styles.next} title="Next" onPress={() => updateUserState()} />
+            <Text style={{ color: 'red' }}>{newUser.error}</Text>
+            <View>
+                {newUser.state !== 'email' ? (
+                    <Button buttonStyle={styles.back} title="Back" onPress={() => backAction()} />
+                ) : undefined}
+                <Button buttonStyle={styles.next} title="Next" onPress={() => nextAction()} />
+            </View>
         </BottomSheet>
     );
 };
@@ -117,11 +204,20 @@ const styles = StyleSheet.create({
     caption: {
         marginTop: 65,
         marginBottom: 15,
-        backgroundColor: 'red',
+        backgroundColor: 'yellow',
+    },
+    error: {
+        color: 'red',
     },
     email: {
         marginTop: 15,
-        backgroundColor: 'yellow',
+    },
+    btns: {
+        flex: 1,
+        flexDirection: 'row',
+    },
+    back: {
+        backgroundColor: 'grey',
     },
     next: {
         marginTop: 10,
