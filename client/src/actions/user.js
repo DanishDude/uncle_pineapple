@@ -35,7 +35,7 @@ export const signup = (user) => (dispatch) => {
             if (!success) {
                 dispatch(errorLoginSignup(msg));
             } else {
-                dispatch(startLoginSignup(user, token));
+                dispatch(successLoginSignup(user, token));
             }
         })
         .catch((err) => {
@@ -59,7 +59,6 @@ export const login = (user) => (dispatch) => {
     fetch('http://localhost:5000/api/auth/login', options)
         .then((res) => res.json())
         .then((payload) => {
-            console.log('PAYLOAD ', payload);
             const { success, msg, user, token } = payload;
 
             if (!success) {

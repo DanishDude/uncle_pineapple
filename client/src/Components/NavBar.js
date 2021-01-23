@@ -11,6 +11,7 @@ const NavBar = (props) => {
 
     const handlePrivateRoute = (route) => {
         if (!isLoggedIn && token === '') {
+            navigation.navigate('ConnectUser');
             dispatch(requestLogin({ requestedRoute: route }));
         } else {
             navigation.navigate(route);

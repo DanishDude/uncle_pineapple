@@ -58,7 +58,7 @@ class Auth {
                             token: 'JWT ' + createToken(user),
                         });
                     } else {
-                        res.status(401).send({ success: false, msg: 'Email and/or password are incorrect' });
+                        res.status(401).send({ success: false, msg: 'Wrong password' });
                     }
                 });
             }

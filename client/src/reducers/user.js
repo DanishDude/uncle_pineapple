@@ -11,18 +11,8 @@ const initialState = {
 const user = (state = initialState, action) => {
     switch (action.type) {
         case 'START_SIGNUP_LOGIN':
-            return { ...state, loading: true, isLoggedIn: false, error: '', requestLogin: false };
+            return { ...state, loading: true, isLoggedIn: false, error: '' };
         case 'SUCCESS_LOGIN_SIGNUP':
-            const result = {
-                ...state,
-                loading: false,
-                requestLogin: false,
-                isLoggedIn: true,
-                user: action.user,
-                token: action.token,
-            };
-            console.log('RESULT ', result);
-            return result;
             return {
                 ...state,
                 loading: false,
@@ -31,8 +21,8 @@ const user = (state = initialState, action) => {
                 user: action.user,
                 token: action.token,
             };
-        case 'ERROR_SIGNUP_LOGIN':
-            return { ...state, loading: false, isLoggedIn: false, requestLogin: false, error: action.err };
+        case 'ERROR_LOGIN_SIGNUP':
+            return { ...state, loading: false, isLoggedIn: false, error: action.err };
         case 'LOGOUT':
             return initialState;
         case 'REQUEST_LOGIN':

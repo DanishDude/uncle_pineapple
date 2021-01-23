@@ -1,9 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Fragment } from 'react';
-import { StyleSheet, View } from 'react-native';
 
 import { createStackNavigator } from '@react-navigation/stack';
-import ConnectUser from './src/Container/ConnectUser/ConnectUser';
+import ConnectUser from './src/Screens/ConnectUser';
 import Home from './src/Screens/Home';
 import Recipe from './src/Screens/Recipe';
 import Recipes from './src/Screens/Recipes';
@@ -20,20 +19,9 @@ export default function App(props) {
                 <Stack.Screen name="Recipe" component={Recipe} />
                 <Stack.Screen name="Recipes" component={Recipes} />
                 <Stack.Screen name="UserProfile" component={UserProfile} />
-                {/* <Stack.Screen name="ConnectUser" component={ConnectUser} /> */}
+                <Stack.Screen name="ConnectUser" component={ConnectUser} />
             </Stack.Navigator>
-            <ConnectUser {...props} />
             <StatusBar style="auto" />
         </Fragment>
     );
 }
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         backgroundColor: '#fff',
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//         alignSelf: 'stretch',
-//     },
-// });
