@@ -39,6 +39,10 @@ class uploadFile {
         return upload.single('photo')(req, res, next);
     }
 
+    avatar(req, res, next) {
+        return upload.single('avatar')(req, res, next);
+    }
+
     deleteCloudinaryResource(url) {
         return cloudinary.api.delete_resources(this.getPublicId(url));
     }

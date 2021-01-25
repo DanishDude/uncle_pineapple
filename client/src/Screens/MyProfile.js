@@ -1,13 +1,19 @@
 import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
+import { useSelector } from 'react-redux';
+import UserAvatar from '../Container/User/UserAvatar';
 
 const MyProfile = (props) => {
+    const { isLoggedIn, user } = useSelector((state) => state.user);
+    const { avatar, email, firstname, lastname, likes } = user;
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
-                {/* <Avatar rounded source={{ uri: user.photo }} /> */}
+                <UserAvatar size="xlarge" user={user} />
                 <View>
+                    <Text>{email}</Text>
                     <Text>MyProfile Screen !</Text>
                 </View>
             </ScrollView>
@@ -23,25 +29,6 @@ const styles = StyleSheet.create({
     scrollView: {
         marginHorizontal: 5,
         marginVertical: 10,
-    },
-    photo: {
-        resizeMode: 'contain',
-        aspectRatio: 1.5,
-        borderRadius: 5,
-    },
-    textArea: {
-        marginTop: 10,
-        marginLeft: 5,
-        marginBottom: 10,
-    },
-    subSection: {
-        marginBottom: 20,
-    },
-    subTitle: {
-        marginBottom: 5,
-    },
-    text: {
-        marginTop: 5,
     },
 });
 

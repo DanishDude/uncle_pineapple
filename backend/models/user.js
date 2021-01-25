@@ -15,6 +15,7 @@ const userSchema = new Schema(
         password: { type: String, select: false },
         firstname: { type: String },
         lastname: { type: String },
+        avatar: { type: String, default: undefined },
         likes: [{ type: Schema.Types.ObjectId, ref: 'Recipe' }],
     },
     { timestamps: { createdAt: 'created_at' } }

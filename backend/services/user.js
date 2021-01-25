@@ -11,6 +11,25 @@ class UserClass {
         }
     }
 
+    async modifyOne(rawData, _id) {
+        const allowed = ['avatar', 'firstname', 'lastname'];
+        let cleanData = {};
+        for (const [key, value] of Object.entries(rawData)) {
+            if (allowed.includes(key)) {
+                cleanData[key] = value;
+            }
+        }
+
+        return await User.findOneAndUpdate({ _id }, cleanData, (err, user) => {
+            if (err) {
+                console.error(err);
+                return 'user not found';
+            } else {
+                return user;
+            }
+        });
+    }
+
     async likeRecipe(user, recipe) {
         const alreadyLiked = user.likes.includes(recipe._id.toString());
 
