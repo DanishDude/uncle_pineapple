@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { Button, Text } from 'react-native-elements';
+import { Button, Icon, Text } from 'react-native-elements';
 import { StackActions } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { REACT_APP_API_SERVER } from '@env';
@@ -55,6 +55,19 @@ const ConnectUser = (props) => {
         return result;
     };
 
+    const backAction = () => {
+        switch (newUser.state) {
+            case 'password':
+                return setNewUser({ ...newUser, state: 'email', password: '', error: '' });
+            case 'new password':
+                return setNewUser({ ...newUser, state: 'email', password: '', error: '' });
+            case 'confirm password':
+                return setNewUser({ ...newUser, state: 'new password', confirmPassword: '', error: '' });
+            default:
+                return;
+        }
+    };
+
     const nextAction = () => {
         setNewUser({ ...newUser, loading: true, error: '' });
         const { email, password, confirmPassword } = newUser;
@@ -90,19 +103,6 @@ const ConnectUser = (props) => {
         }
     };
 
-    const backAction = () => {
-        switch (newUser.state) {
-            case 'password':
-                return setNewUser({ ...newUser, state: 'email', password: '', error: '' });
-            case 'new password':
-                return setNewUser({ ...newUser, state: 'email', password: '', error: '' });
-            case 'confirm password':
-                return setNewUser({ ...newUser, state: 'new password', confirmPassword: '', error: '' });
-            default:
-                return;
-        }
-    };
-
     const nextButton = () => {
         switch (newUser.state) {
             case 'password':
@@ -114,6 +114,9 @@ const ConnectUser = (props) => {
         }
     };
 
+    const BackIcon = () => (
+        <Icon iconStyle={styles.caption} name="arrow-left" type="fontisto" color="grey" onPress={() => backAction()} />
+    );
     const ErrorNotice = () => <Text style={styles.error}>{newUser.error}</Text>;
 
     return (
@@ -122,9 +125,12 @@ const ConnectUser = (props) => {
             <View style={styles.fields}>
                 {newUser.state === 'email' ? (
                     <View style={styles.field}>
-                        <Text style={styles.caption}>Enter your email</Text>
+                        <View style={styles.captionWrapper}>
+                            <Text style={styles.caption}>Hi, Enter Your Email</Text>
+                        </View>
 
                         <InputText
+                            inputStyle={styles.input}
                             placeholder="uncle.pineapple@mail.com"
                             autoCompleteType="email"
                             keyboardType="email-address"
@@ -138,11 +144,23 @@ const ConnectUser = (props) => {
 
                 {newUser.state === 'password' ? (
                     <View style={styles.field}>
-                        <Text style={styles.email}>{newUser.email}</Text>
-                        <Text style={styles.caption}>Welcome Back! Enter your password</Text>
+                        <View style={styles.captionWrapper}>
+                            <BackIcon />
+                            <Text style={styles.caption}>Hi, Welcom Back!</Text>
+                        </View>
+                        <View style={styles.subCaptionWrapper}>
+                            <Text style={styles.subCaption}>Signing in as {newUser.email}.</Text>
+                            <Button
+                                titleStyle={styles.notYou}
+                                title="Not You?"
+                                type="clear"
+                                onPress={() => backAction()}
+                            />
+                        </View>
                         <InputText
+                            inputStyle={styles.input}
                             secureTextEntry={true}
-                            placeholder="Nachos"
+                            placeholder="Enter Your Password"
                             autoCompleteType="password"
                             keyboardType="default"
                             textContentType="password"
@@ -155,11 +173,23 @@ const ConnectUser = (props) => {
 
                 {newUser.state === 'new password' ? (
                     <View style={styles.field}>
-                        <Text style={styles.email}>{newUser.email}</Text>
-                        <Text style={styles.caption}>Enter a password</Text>
+                        <View style={styles.captionWrapper}>
+                            <BackIcon />
+                            <Text style={styles.caption}>Enter a password</Text>
+                        </View>
+                        <View style={styles.subCaptionWrapper}>
+                            <Text style={styles.subCaption}>New profile for {newUser.email}.</Text>
+                            <Button
+                                titleStyle={styles.notYou}
+                                title="Not You?"
+                                type="clear"
+                                onPress={() => backAction()}
+                            />
+                        </View>
                         <InputText
+                            inputStyle={styles.input}
                             secureTextEntry={true}
-                            placeholder="Nachos"
+                            placeholder="Create a Password"
                             autoCompleteType="password"
                             keyboardType="default"
                             textContentType="newPassword"
@@ -171,11 +201,23 @@ const ConnectUser = (props) => {
 
                 {newUser.state === 'confirm password' ? (
                     <View style={styles.field}>
-                        <Text style={styles.email}>{newUser.email}</Text>
-                        <Text style={styles.caption}>Great ! Confirm your password</Text>
+                        <View style={styles.captionWrapper}>
+                            <BackIcon />
+                            <Text style={styles.caption}>Great! Confirm your password</Text>
+                        </View>
+                        <View style={styles.subCaptionWrapper}>
+                            <Text style={styles.subCaption}>New profile for {newUser.email}.</Text>
+                            <Button
+                                titleStyle={styles.notYou}
+                                title="Not You?"
+                                type="clear"
+                                onPress={() => setNewUser({ ...newUser, state: 'email', password: '', error: '' })}
+                            />
+                        </View>
                         <InputText
+                            inputStyle={styles.input}
                             secureTextEntry={true}
-                            placeholder=""
+                            placeholder="Confirm Your Password"
                             autoCompleteType="password"
                             keyboardType="default"
                             textContentType="newPassword"
@@ -186,11 +228,7 @@ const ConnectUser = (props) => {
                 ) : undefined}
             </View>
 
-            <View style={styles.btns}>
-                <View style={styles.buttons}></View>
-                {newUser.state !== 'email' ? (
-                    <Button buttonStyle={styles.back} title="Back" onPress={() => backAction()} />
-                ) : undefined}
+            <View style={styles.buttons}>
                 <Button buttonStyle={styles.next} title={nextButton()} onPress={() => nextAction()} />
             </View>
             <View style={styles.bottom}></View>
@@ -204,46 +242,65 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         justifyContent: 'center',
     },
+    loading: {
+        flex: 3,
+        flexDirection: 'row',
+        textAlign: 'center',
+    },
     fields: {
         flex: 8,
     },
     field: {
         flex: 1,
+        paddingTop: 20,
+    },
+    captionWrapper: {
+        flex: 3,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     caption: {
-        flex: 1,
-        fontSize: 18,
-        marginLeft: 10,
+        marginHorizontal: 5,
+        fontSize: 24,
     },
-    loading: {
-        flex: 2,
+    subCaptionWrapper: {
+        flex: 3,
         flexDirection: 'row',
-        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    error: {
-        flex: 1,
-        color: 'red',
-        marginLeft: 10,
-    },
-    email: {
-        marginLeft: 10,
-        marginBottom: 10,
+    subCaption: {
         fontSize: 14,
     },
-    btns: {
-        flex: 6,
-        marginLeft: 100,
-        marginRight: 100,
+    notYou: {
+        fontSize: 14,
     },
-    buttons: { flex: 1, flexDirection: 'row' },
+    input: {
+        marginTop: 20,
+    },
+    error: {
+        flex: 2,
+        color: 'red',
+        marginLeft: 10,
+        marginBottom: 30,
+    },
+    buttons: {
+        flex: 6,
+        flexDirection: 'row',
+        alignContent: 'center',
+        justifyContent: 'center',
+    },
     back: {
+        left: 10,
         backgroundColor: 'grey',
     },
     next: {
-        marginTop: 10,
+        marginLeft: 10,
+        width: 200,
     },
     bottom: {
-        flex: 10,
+        flex: 8,
     },
 });
 
