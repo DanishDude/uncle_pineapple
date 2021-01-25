@@ -6,7 +6,7 @@ import ConnectUser from './src/Screens/ConnectUser';
 import Home from './src/Screens/Home';
 import Recipe from './src/Screens/Recipe';
 import Recipes from './src/Screens/Recipes';
-import UserProfile from './src/Screens/UserProfile';
+import MyProfile from './src/Screens/MyProfile';
 
 const Stack = createStackNavigator();
 
@@ -18,8 +18,8 @@ export default function App(props) {
                 <Stack.Screen name="Home" component={Home} />
                 <Stack.Screen name="Recipe" component={Recipe} />
                 <Stack.Screen name="Recipes" component={Recipes} />
-                <Stack.Screen name="UserProfile" component={UserProfile} />
-                <Stack.Screen name="ConnectUser" component={ConnectUser} />
+                <Stack.Screen name="MyProfile" component={MyProfile} options={{ title: 'My Profile' }} />
+                <Stack.Screen name="ConnectUser" component={ConnectUser} options={{ title: 'Sign in to My Account' }} />
             </Stack.Navigator>
             <StatusBar style="auto" />
         </Fragment>

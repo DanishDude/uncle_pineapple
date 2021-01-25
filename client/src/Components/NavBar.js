@@ -27,7 +27,7 @@ const NavBar = (props) => {
                 <Button title="Recipes" type="outline" onPress={() => navigation.navigate('Recipes')} />
             </View>
             <View style={styles.btns}>
-                <Button title="UserProfile" type="outline" onPress={() => handlePrivateRoute('UserProfile')} />
+                <Button title="My Profile" type="outline" onPress={() => handlePrivateRoute('MyProfile')} />
             </View>
         </View>
     );

@@ -2,13 +2,13 @@ import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
 
-const UserProfile = (props) => {
+const MyProfile = (props) => {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 {/* <Avatar rounded source={{ uri: user.photo }} /> */}
                 <View>
-                    <Text>UserProfile Screen !</Text>
+                    <Text>MyProfile Screen !</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -45,4 +45,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default UserProfile;
+export default MyProfile;
