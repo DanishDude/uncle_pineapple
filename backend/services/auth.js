@@ -3,13 +3,16 @@ const User = require('../models/user');
 const validate = require('../services/validate');
 
 function createToken(user) {
-    const { _id, email, firstname, lastname, likes } = user;
-    return jwt.sign({ _id, email, firstname, lastname, likes }, process.env.PRIVATE_KEY /* , { expiresIn: ' 30m' } */);
+    const { _id, email, firstname, lastname, likes, avatar } = user;
+    return jwt.sign(
+        { _id, email, firstname, lastname, likes, avatar },
+        process.env.PRIVATE_KEY /* , { expiresIn: ' 30m' } */
+    );
 }
 
 function createPublicUser(user) {
-    const { _id, email, firstname, lastname, likes } = user;
-    return { _id, email, firstname, lastname, likes };
+    const { _id, email, firstname, lastname, likes, avatar } = user;
+    return { _id, email, firstname, lastname, likes, avatar };
 }
 
 class Auth {
@@ -62,7 +65,7 @@ class Auth {
                     }
                 });
             }
-        }).select(['email', 'password', 'firstname', 'lastname', 'likes']);
+        }).select(['avatar', 'email', 'password', 'firstname', 'lastname', 'likes']);
     }
 }
 

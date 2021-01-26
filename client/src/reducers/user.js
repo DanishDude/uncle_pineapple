@@ -21,10 +21,11 @@ const user = (state = initialState, action) => {
                 user: action.user,
                 token: action.token,
             };
+        case 'SUCCESS_MODIFY_USER':
+            console.log('REDUCER');
+            return { ...state, user: action.user, loading: false, error: '' };
         case 'ERROR_LOGIN_SIGNUP':
             return { ...state, loading: false, isLoggedIn: false, error: action.err };
-        case 'LOGOUT':
-            return initialState;
         case 'REQUEST_LOGIN':
             return { ...state, context: { ...state.context, ...action.context }, requestLogin: true };
         case 'DENY_LOGIN_REQUEST':
@@ -37,6 +38,8 @@ const user = (state = initialState, action) => {
         case 'DISLIKE_RECIPE':
             state.user.likes = state.user.likes.filter((like) => like !== action.recipeId);
             return { ...state };
+        case 'LOGOUT':
+            return initialState;
         default:
             return state;
     }

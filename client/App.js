@@ -11,7 +11,6 @@ import MyProfile from './src/Screens/MyProfile';
 const Stack = createStackNavigator();
 
 export default function App(props) {
-    console.log('App Props ', props);
     return (
         <Fragment>
             <Stack.Navigator initialRouteName="Home">

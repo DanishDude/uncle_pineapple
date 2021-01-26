@@ -15,7 +15,10 @@
         "start": "cd server && yarn && node server.js",
         "heroku-postbuild": "cd client && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
     },
-    "dependencies": {},
+    "dependencies": {
+        "expo-cli": "^4.1.0",
+        "global": "^4.4.0"
+    },
     "devDependencies": {
         "concurrently": "^4.0.1",
         "prettier": "2.2.1"

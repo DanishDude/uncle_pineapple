@@ -126,7 +126,7 @@ const ConnectUser = (props) => {
                 {newUser.state === 'email' ? (
                     <View style={styles.field}>
                         <View style={styles.captionWrapper}>
-                            <Text style={styles.caption}>Hi, Enter Your Email</Text>
+                            <Text style={styles.caption}>Enter Your Email</Text>
                         </View>
 
                         <InputText
