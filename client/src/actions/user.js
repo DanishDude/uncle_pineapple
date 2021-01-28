@@ -75,22 +75,43 @@ export const login = (user) => (dispatch) => {
         });
 };
 
+export const startModifyUser = () => ({
+    type: 'START_MODIFY_USER',
+});
+
 export const successModifyUser = (user) => ({
     type: 'SUCCESS_MODIFY_USER',
     user,
 });
 
+export const errorModifyUser = (err) => ({
+    type: 'ERROR_MODIFY_USER',
+    err,
+});
+
 export const modifyUser = (user, token) => (dispatch) => {
-    dispatch(startSignupLogin());
+    dispatch(startModifyUser());
+
+    let fd = new FormData();
+    const allowed = ['avatar', 'firstname', 'lastname'];
+    for (const [key, value] of Object.entries(user)) {
+        if (allowed.includes(key)) {
+            if (key === 'avatar' && typeof value !== 'string') {
+                fd.append(key, value);
+            } else {
+                fd.append(key, value);
+            }
+        }
+    }
 
     const options = {
         method: 'PUT',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
             Authorization: token,
         },
-        body: JSON.stringify(user),
+        body: fd,
     };
 
     fetch(`${REACT_APP_API_SERVER}/user`, options)
@@ -101,13 +122,41 @@ export const modifyUser = (user, token) => (dispatch) => {
             if (!success) {
                 dispatch(errorLoginSignup(msg));
             } else {
-                console.log('SUCCESS');
                 dispatch(successModifyUser(user));
+                dispatch(getUserInfo(token));
             }
         })
         .catch((error) => {
             console.error(error);
             dispatch(errorLoginSignup('Error updating user'));
+        });
+};
+
+export const getUserInfo = (token) => (dispatch) => {
+    dispatch(startModifyUser());
+
+    const options = {
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: token,
+        },
+    };
+
+    fetch(`${REACT_APP_API_SERVER}/user`, options)
+        .then((res) => res.json())
+        .then((payload) => {
+            const { success, msg, user } = payload;
+
+            if (!success) {
+                dispatch(errorModifyUser(msg));
+            } else {
+                dispatch(successModifyUser(user));
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+            dispatch(errorModifyUser('Error fetching user info'));
         });
 };
 

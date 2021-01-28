@@ -135,6 +135,7 @@ const ConnectUser = (props) => {
                             autoCompleteType="email"
                             keyboardType="email-address"
                             textContentType="emailAddress"
+                            autoFocus={true}
                             onChangeText={(value) => setNewUser({ ...newUser, email: value.toLowerCase() })}
                             value={newUser.email}
                         />
@@ -164,6 +165,7 @@ const ConnectUser = (props) => {
                             autoCompleteType="password"
                             keyboardType="default"
                             textContentType="password"
+                            autoFocus={true}
                             onChangeText={(value) => setNewUser({ ...newUser, password: value })}
                             value={newUser.password}
                         />
@@ -193,6 +195,7 @@ const ConnectUser = (props) => {
                             autoCompleteType="password"
                             keyboardType="default"
                             textContentType="newPassword"
+                            autoFocus={true}
                             onChangeText={(value) => setNewUser({ ...newUser, password: value })}
                         />
                         <ErrorNotice />
@@ -221,6 +224,7 @@ const ConnectUser = (props) => {
                             autoCompleteType="password"
                             keyboardType="default"
                             textContentType="newPassword"
+                            autoFocus={true}
                             onChangeText={(value) => setNewUser({ ...newUser, confirmPassword: value })}
                         />
                         <ErrorNotice />

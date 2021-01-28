@@ -18,7 +18,7 @@ export default function App(props) {
                 <Stack.Screen name="Recipe" component={Recipe} />
                 <Stack.Screen name="Recipes" component={Recipes} />
                 <Stack.Screen name="MyProfile" component={MyProfile} options={{ title: 'My Profile' }} />
-                <Stack.Screen name="ConnectUser" component={ConnectUser} options={{ title: 'Sign in to My Account' }} />
+                <Stack.Screen name="ConnectUser" component={ConnectUser} options={{ title: 'Sign in' }} />
             </Stack.Navigator>
             <StatusBar style="auto" />
         </Fragment>

@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { Avatar } from 'react-native-elements';
 
 const MyProfile = (props) => {
-    const { size, user } = props;
-    const { avatar, email, firstname, lastname, likes } = user;
+    const { onPress, size, user } = props;
+    const { avatar, email, firstname, lastname } = user;
+
+    const avatarPhoto = typeof avatar === 'string' ? avatar : avatar.uri;
 
     const title = () => {
         let result = '';
@@ -23,11 +24,11 @@ const MyProfile = (props) => {
     return (
         <Avatar
             rounded
-            source={{ uri: avatar }}
+            source={{ uri: avatarPhoto }}
             size={size}
             title={title()}
             titleStyle={{ backgroundColor: '#BDBDBD' }}
-            onPress={() => console.log(props)}
+            onPress={onPress}
         />
     );
 };

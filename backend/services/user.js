@@ -11,16 +11,26 @@ class UserClass {
         }
     }
 
-    async modifyOne(rawData, _id) {
+    async getOneById(_id) {
+        const user = await User.findById(_id);
+
+        if (user) {
+            return user;
+        } else {
+            return `user not found with id ${_id}`;
+        }
+    }
+
+    async modifyOne(data, _id) {
         const allowed = ['avatar', 'firstname', 'lastname'];
         let cleanData = {};
-        for (const [key, value] of Object.entries(rawData)) {
+        for (const [key, value] of Object.entries(data)) {
             if (allowed.includes(key)) {
                 cleanData[key] = value;
             }
         }
 
-        return await User.findOneAndUpdate({ _id }, cleanData, (err, user) => {
+        const result = await User.findOneAndUpdate({ _id }, cleanData, (err, user) => {
             if (err) {
                 console.error(err);
                 return 'user not found';
@@ -28,6 +38,7 @@ class UserClass {
                 return user;
             }
         });
+        return result;
     }
 
     async likeRecipe(user, recipe) {

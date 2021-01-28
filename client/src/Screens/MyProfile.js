@@ -1,38 +1,40 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import { Avatar, Input, Text } from 'react-native-elements';
+import { Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Input, Text } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { modifyUser } from '../actions/user';
-// import InputText from '../Components/Forms/InputText';
 import UserAvatar from '../Container/User/UserAvatar';
-import UserInfo from '../Container/User/UserInfo';
 
 const MyProfile = (props) => {
-    const { isLoggedIn, user, token } = useSelector((state) => state.user);
-    const { avatar, email, firstname, lastname, likes } = user;
-    const [newUser, setNewUser] = useState(user);
+    const { user, token } = useSelector((state) => state.user);
+    const [newUser, setNewUser] = useState({ firstname: '', lastname: '', ...user });
     const dispatch = useDispatch();
 
-    const title = () => {
-        let result = '';
-        if (firstname && lastname) {
-            result = firstname[0] + lastname[0];
-        } else if (firstname) {
-            result = firstname[0] + firstname[1];
-        } else if (lastname) {
-            result = lastname[0] + lastname[1];
-        } else {
-            result = email[0] + email[1];
-        }
-        return result.toString().toUpperCase();
-    };
+    const pickImage = async () => {
+        (async () => {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (status !== 'grated') {
+                    alert('Sorry, we need camera roll permissions to update your avatar photo!');
+                }
+            }
+        })();
 
-    const updateUser = (value, field) => {
-        // dispatch update user info
-        console.log(value);
-        if (user[field] !== value) {
-            console.log('We should update user');
-            dispatch(modifyUser(newUser, token));
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.cancelled) {
+            let { type, uri } = result;
+            const uriParts = uri.split('.');
+            const fileType = uriParts[uriParts.length - 1];
+            type = `image/${fileType}`;
+            const name = `avatar_${user._id}.${fileType}`;
+            setNewUser({ ...newUser, avatar: { uri, name, type } }, dispatch(modifyUser(newUser, token)));
         }
     };
 
@@ -40,33 +42,51 @@ const MyProfile = (props) => {
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.avatar}>
-                    <Avatar
-                        rounded
-                        source={{ uri: avatar }}
-                        size="xlarge"
-                        title={title()}
-                        titleStyle={{ backgroundColor: '#BDBDBD' }}
-                        onPress={() => console.log(props)}
-                    />
+                    <UserAvatar size="xlarge" user={newUser} onPress={pickImage} />
                 </View>
 
                 <View style={styles.email}>
-                    <Text style={styles.email}>{email}</Text>
+                    <Text style={styles.email}>{user?.email}</Text>
                 </View>
+
                 <View style={styles.info}>
                     <Input
                         inputStyle={styles.input}
-                        label="First Name"
+                        label={newUser.firstname.length ? 'First Name' : ''}
                         placeholder="First Name"
                         autoCompleteType="name"
                         textContentType="givenName"
-                        onBlur={(e) => updateUser(e.nativeEvent.text, 'firstname')}
+                        onBlur={(e) => {
+                            if (e.nativeEvent.text !== user.firstname) {
+                                setNewUser(
+                                    { ...newUser, firstname: e.nativeEvent.text },
+                                    dispatch(modifyUser(newUser, token))
+                                );
+                            }
+                        }}
                         onChangeText={(text) => setNewUser({ ...newUser, firstname: text })}
                         value={newUser.firstname}
                     />
                 </View>
-                <View style={styles.bottom}>
-                    <Text>MyProfile Screen !</Text>
+
+                <View style={styles.info}>
+                    <Input
+                        inputStyle={styles.input}
+                        label={newUser.lastname.length ? 'Last Name' : ''}
+                        placeholder="Last Name"
+                        autoCompleteType="name"
+                        textContentType="familyName"
+                        onBlur={(e) => {
+                            if (e.nativeEvent.text !== user.lastname) {
+                                setNewUser(
+                                    { ...newUser, lastname: e.nativeEvent.text },
+                                    dispatch(modifyUser(newUser, token))
+                                );
+                            }
+                        }}
+                        onChangeText={(text) => setNewUser({ ...newUser, lastname: text })}
+                        value={newUser.lastname}
+                    />
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -77,44 +97,32 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        // minHeight: '100%',
         minWidth: '100%',
         backgroundColor: '#fff',
     },
     scrollView: {
         flex: 1,
-        // minHeight: '100%',
         minWidth: '100%',
-        // marginVertical: 10,
-        backgroundColor: 'blue',
     },
     avatar: {
         flex: 4,
         alignItems: 'center',
-        // justifyContent: 'center',
-        marginVertical: 10,
-        backgroundColor: 'green',
+        marginTop: 20,
+        marginBottom: 10,
     },
     email: {
         flex: 3,
         alignItems: 'center',
         fontSize: 28,
         marginVertical: 10,
-        backgroundColor: 'pink',
     },
     info: {
         flex: 4,
         alignItems: 'center',
         marginVertical: 10,
-        backgroundColor: 'yellow',
     },
     input: {
         flex: 1,
-    },
-    bottom: {
-        flex: 4,
-        alignItems: 'center',
-        backgroundColor: 'red',
     },
 });
 
