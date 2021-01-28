@@ -34,9 +34,12 @@ const MyProfile = (props) => {
             const fileType = uriParts[uriParts.length - 1];
             type = `image/${fileType}`;
             const name = `avatar_${user._id}.${fileType}`;
-            setNewUser({ ...newUser, avatar: { uri, name, type } }, dispatch(modifyUser(newUser, token)));
+            dispatch(modifyUser({ avatar: { uri, name, type } }, token));
+            setNewUser({ ...newUser, avatar: uri });
         }
     };
+
+    const updateUser = () => dispatch(modifyUser(newUser, token));
 
     return (
         <SafeAreaView style={styles.container}>
@@ -58,10 +61,7 @@ const MyProfile = (props) => {
                         textContentType="givenName"
                         onBlur={(e) => {
                             if (e.nativeEvent.text !== user.firstname) {
-                                setNewUser(
-                                    { ...newUser, firstname: e.nativeEvent.text },
-                                    dispatch(modifyUser(newUser, token))
-                                );
+                                setNewUser({ ...newUser, firstname: e.nativeEvent.text }, updateUser());
                             }
                         }}
                         onChangeText={(text) => setNewUser({ ...newUser, firstname: text })}
@@ -78,10 +78,7 @@ const MyProfile = (props) => {
                         textContentType="familyName"
                         onBlur={(e) => {
                             if (e.nativeEvent.text !== user.lastname) {
-                                setNewUser(
-                                    { ...newUser, lastname: e.nativeEvent.text },
-                                    dispatch(modifyUser(newUser, token))
-                                );
+                                setNewUser({ ...newUser, lastname: e.nativeEvent.text }, updateUser());
                             }
                         }}
                         onChangeText={(text) => setNewUser({ ...newUser, lastname: text })}
